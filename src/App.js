@@ -8,6 +8,52 @@ import ChatScreen from './src/screens/ChatScreen';
 import logo from './logo.svg';
 import './App.css';
 
+
+
+const API_URL = 'https://example.com/api'; // Replace with your actual API URL
+
+export const getChats = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/chats`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching chats:', error);
+    throw error;
+  }
+};
+
+export const getChatMessages = async (chatId) => {
+  try {
+    const response = await axios.get(`${API_URL}/chats/${chatId}/messages`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching chat messages:', error);
+    throw error;
+  }
+};
+
+export const sendMessage = async (chatId, message) => {
+  try {
+    const response = await axios.post(`${API_URL}/chats/${chatId}/messages`, { text: message });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 const Stack = createStackNavigator();
 
 const App = () => {
