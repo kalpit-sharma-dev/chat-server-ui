@@ -5,6 +5,8 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import VerifyScreen from './src/screens/VerifyScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import logo from './logo.svg';
+import './App.css';
 
 const Stack = createStackNavigator();
 
