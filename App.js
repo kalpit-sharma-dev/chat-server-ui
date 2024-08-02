@@ -53,6 +53,7 @@ const App = () => {
         <Stack.Screen name="Verify" component={VerifyScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="Chats" component={ChatsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
