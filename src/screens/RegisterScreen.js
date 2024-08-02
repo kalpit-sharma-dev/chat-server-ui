@@ -11,7 +11,10 @@ const RegisterScreen = ({ navigation }) => {
 
   // Append form fields to the FormData object
   const formData = new FormData();
-  formData.append('phone', '123456789');
+  formData.append('phone', mobile);
+  formData.append('username', username);
+  formData.append('password', password);
+  formData.append('email', email);
 
   const handleRegister = async () => {
     if (!username || !password || !email) {
@@ -30,7 +33,7 @@ const RegisterScreen = ({ navigation }) => {
 
       });
       console.log('Response:', response);
-      if (response.status === 200) {
+      if (response.status === 201) {
         Alert.alert('Success', 'Registration successful', [
           { text: 'OK', onPress: () => navigation.navigate('Login') },
         ]);
@@ -53,7 +56,9 @@ const RegisterScreen = ({ navigation }) => {
       Alert.alert('Error', 'An error occurred. Please try again.');
     }
   };
-
+  const moveToLogin =async ()=> {
+    navigation.navigate('Login') 
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
@@ -85,6 +90,7 @@ const RegisterScreen = ({ navigation }) => {
         onChangeText={setPassword}
       />
       <Button title="Register" onPress={handleRegister} />
+      <Button title="Login" onPress={moveToLogin} />
     </View>
   );
 };
