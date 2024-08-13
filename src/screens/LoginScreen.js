@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.8:9999/chat-service/api/login', formData,{
+      const response = await axios.post('http://192.168.1.12:9999/chat-service/api/login', formData,{
         // phone,
         // password,
         headers: {
@@ -31,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
       if (response.status === 200) {
         // Save the JWT token
         await AsyncStorage.setItem('jwtToken', response.data.token);
-        navigation.navigate('Chats');
+        navigation.navigate('Chats',{ value: phone });
       } else {
         Alert.alert('Error', 'Login failed');
       }

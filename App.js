@@ -5,12 +5,16 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import VerifyScreen from './src/screens/VerifyScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ChatScreen from './src/screens/ChatScreen';
+import ChatsScreen from './src/screens/ChatsScreen';
+import NewChatScreen from './src/screens/NewChatScreen';
+import ContactsScreen from './src/screens/ContactsScreen';
+import { ChatProvider } from './src/screens/ChatContext';
 import logo from './src/logo.svg';
 import './src/App.css';
 
 
 
-const API_URL = 'http://192.168.1.8:9999/chat-service/api'; // Replace with your actual API URL
+const API_URL = 'http://192.168.1.12:9999/chat-service/api'; // Replace with your actual API URL
 
 export const getChats = async () => {
   try {
@@ -47,6 +51,7 @@ const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    <ChatProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Register">
         <Stack.Screen name="Register" component={RegisterScreen} />
@@ -54,8 +59,12 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Chats" component={ChatsScreen} />
+        <Stack.Screen name="NewChat" component={NewChatScreen} />
+        <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
+    
       </Stack.Navigator>
     </NavigationContainer>
+    </ChatProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.8:9999/chat-service/api'; // Replace with your server URL
+const API_URL = 'http://192.168.1.12:9999/chat-service/api'; // Replace with your server URL
 
 export const register = async (phoneNumber) => {
   return axios.post(`${API_URL}/register`, { phoneNumber });

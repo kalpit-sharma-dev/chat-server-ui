@@ -33,6 +33,9 @@
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Your message explaining why the app needs access to contacts</string>
+
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
