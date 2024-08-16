@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, Text ,TouchableOpacity  } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Expo. Otherwise, use a similar icon package.
+import { Button } from 'react-native';
 
 import ChatItem from '../components/ChatItem'; // Import your ChatItem component
 
@@ -50,6 +51,7 @@ const ChatsScreen = ({ route }) => {
       >
         <Ionicons name="chatbubble-ellipses-outline" size={24} color="white" />
       </TouchableOpacity>
+<Button title="Go to Reels" onPress={() => navigation.navigate('Reels')} color="#075E54" />
 
     </View>
     

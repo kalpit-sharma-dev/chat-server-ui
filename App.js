@@ -9,6 +9,8 @@ import ChatsScreen from './src/screens/ChatsScreen';
 import NewChatScreen from './src/screens/NewChatScreen';
 import ContactsScreen from './src/screens/ContactsScreen';
 import { ChatProvider } from './src/screens/ChatContext';
+import ReelsScreen from './src/screens/ReelsScreen';
+
 import logo from './src/logo.svg';
 import './src/App.css';
 
@@ -61,6 +63,7 @@ const App = () => {
         <Stack.Screen name="Chats" component={ChatsScreen} />
         <Stack.Screen name="NewChat" component={NewChatScreen} />
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
+        <Stack.Screen name="Reels" component={ReelsScreen} />
     
       </Stack.Navigator>
     </NavigationContainer>
