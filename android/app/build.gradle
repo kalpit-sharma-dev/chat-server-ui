@@ -118,6 +118,9 @@ android {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
         }
     }
+    project.ext.react = [
+    enableHermes: true
+]
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
@@ -143,15 +146,18 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
+    implementation project(':react-native-video')
+    implementation 'com.facebook.fresco:fresco:2.6.0' // Update to the latest stable version
+    implementation 'com.facebook.fresco:animated-gif:2.6.0'
+    
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
 
     if (isGifEnabled) {
         // For animated gif support
-        implementation("com.def enableHermes = project.ext.react.get("enableHermes", true);
-facebook.fresco:animated-gif:${reactAndroidLibs.versions.fresco.get()}")
+        implementation(
+"facebook.fresco:animated-gif:${reactAndroidLibs.versions.fresco.get()}")
     }
 
     if (isWebpEnabled) {
@@ -169,7 +175,8 @@ facebook.fresco:animated-gif:${reactAndroidLibs.versions.fresco.get()}")
         implementation jscFlavor
     }
     implementation project(':react-native-linear-gradient')
-    compile project(':RCTVideo')
+    implementation project(':react-native-video')
+
 
 }
 

@@ -31,11 +31,12 @@ console.log(value)
     />
   );
 
+  const chatList = Array.isArray(chats) ? chats : [];
   return (
     <View style={styles.container}>
-      {chats.length > 0 ? (
+      {chatList.length > 0 ? (
         <FlatList
-          data={chats}
+          data={chatList}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         /> 

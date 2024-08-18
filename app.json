@@ -2,6 +2,11 @@
   "expo": {
     "name": "chat-server-ui",
     "slug": "chat-server-ui",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "3b9cf8c2-be6f-417e-aa0b-ec1b2b8aafcb"
+      }
+    }
   }
 }
