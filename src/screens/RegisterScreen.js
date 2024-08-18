@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.12:9999/chat-service/api/register',formData, {
+      const response = await axios.post('http://192.168.1.5:9999/chat-service/api/register',formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },

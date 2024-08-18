@@ -16,7 +16,7 @@ import './src/App.css';
 
 
 
-const API_URL = 'http://192.168.1.12:9999/chat-service/api'; // Replace with your actual API URL
+const API_URL = 'http://192.168.1.5:9999/chat-service/api'; // Replace with your actual API URL
 
 export const getChats = async () => {
   try {

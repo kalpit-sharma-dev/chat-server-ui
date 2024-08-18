@@ -15,7 +15,7 @@ const ChatsScreen = ({ route }) => {
 
   useEffect(() => {
     // Fetch chats from backend
-    fetch('http://192.168.1.12:9999/chat-service/api/chats/${phone}')
+    fetch('http://192.168.1.5:9999/chat-service/api/chats/${phone}')
       .then((response) => response.json())
       .then((data) => setChats(data))
       .catch((error) => console.error(error));

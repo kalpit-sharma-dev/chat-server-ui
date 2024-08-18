@@ -19,7 +19,7 @@ const ReelsScreen = () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    axios.get(`http://192.168.1.12:9999/chat-service/api/reels?page=${page}&limit=10`)
+    axios.get(`http://192.168.1.5:9999/chat-service/api/reels?page=${page}&limit=10`)
       .then(response => {
         console.log('Video URL:', response);
         console.log('Fetched data:', response.data);
