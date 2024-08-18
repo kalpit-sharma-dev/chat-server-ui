@@ -19,7 +19,8 @@ buildscript {
         jcenter() // Optional, but often used
     }
     dependencies {
-        classpath('com.android.tools.build:gradle')
+       classpath('com.android.tools.build:gradle')
+        //classpath("com.android.tools.build:gradle:8.7")
         classpath('com.facebook.react:react-native-gradle-plugin')
         classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
     }
@@ -41,5 +42,8 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://maven.google.com' }
+        jcenter()
     }
 }
