@@ -147,9 +147,9 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-video')
-    implementation 'com.facebook.fresco:fresco:2.6.0' // Update to the latest stable version
     implementation 'com.facebook.fresco:animated-gif:2.6.0'
-    
+    implementation 'com.facebook.fresco:fresco:2.6.0' // Update to the latest stable version
+
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
