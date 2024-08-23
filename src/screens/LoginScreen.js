@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.5:9999/chat-service/api/login', formData,{
+      const response = await axios.post('http://192.168.1.10:9999/chat-service/api/login', formData,{
         // phone,
         // password,
         headers: {

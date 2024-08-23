@@ -19,12 +19,12 @@ const ReelsScreen = () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    axios.get(`http://192.168.1.5:9999/chat-service/api/reels?page=${page}&limit=10`)
+    axios.get(`http://192.168.1.10:9999/chat-service/api/reels?page=${page}&limit=10`)
       .then(response => {
         console.log('Video URL:', response);
         console.log('Fetched data:', response.data);
-        if (response.data.reels.length > 0) {
-          setReels(prevReels => [...prevReels, ...response.data.reels]);
+        if (response.data.length > 0) {
+          setReels(prevReels => [...prevReels, ...response.data]);
           setPage(prevPage => prevPage + 1);
         } else {
           setHasMore(false);
@@ -33,7 +33,7 @@ const ReelsScreen = () => {
       })
       .catch(error => {
         console.error('Error fetching reels', error);
-        setLoading(false);
+        setLoading(true);
       });
   };
 
@@ -47,7 +47,7 @@ const ReelsScreen = () => {
 
   const renderItem = ({ item }) => (
     <Video
-      source={{ uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" }}
+      source={{ uri: "https://www.w3schools.com/tags/mov_bbb.mp4" }}
       style={styles.video}
       resizeMode="cover"
       repeat={true}
