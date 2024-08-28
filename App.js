@@ -1,4 +1,7 @@
 import React from 'react';
+import { FlatList, View, StyleSheet, Text ,TouchableOpacity  } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -10,10 +13,16 @@ import NewChatScreen from './src/screens/NewChatScreen';
 import ContactsScreen from './src/screens/ContactsScreen';
 import { ChatProvider } from './src/screens/ChatContext';
 import ReelsScreen from './src/screens/ReelsScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import CameraScreen from './src/screens/CameraScreen';
 
 import logo from './src/logo.svg';
 import './src/App.css';
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
 
 
 const API_URL = 'http://192.168.1.12:9999/chat-service/api'; // Replace with your actual API URL
@@ -48,6 +57,28 @@ export const sendMessage = async (chatId, message) => {
   }
 };
 
+// Bottom Tabs for Home and Settings
+function HomeTabs(route) {
+  return (
+    <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} initialParams={route.params}  options={({ navigation }) => ({
+          title: 'Home',
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Chats',{ value: value })}
+              style={{ marginRight: 15 }}
+            >
+              <Icon name="comments" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        })}/>
+        <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Reels" component={ReelsScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+      </Tab.Navigator>
+  );
+}
 
 const Stack = createStackNavigator();
 
@@ -64,7 +95,7 @@ const App = () => {
         <Stack.Screen name="NewChat" component={NewChatScreen} />
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
         <Stack.Screen name="Reels" component={ReelsScreen} />
-    
+        <Stack.Screen name="HomeTabs" component={HomeTabs} />
       </Stack.Navigator>
     </NavigationContainer>
     </ChatProvider>

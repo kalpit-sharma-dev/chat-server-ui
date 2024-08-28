@@ -31,7 +31,8 @@ const LoginScreen = ({ navigation }) => {
       if (response.status === 200) {
         // Save the JWT token
         await AsyncStorage.setItem('jwtToken', response.data.token);
-        navigation.navigate('Chats',{ value: phone });
+        //navigation.navigate('Chats',{ value: phone });
+        navigation.navigate('HomeTabs',{ value : phone });
       } else {
         Alert.alert('Error', 'Login failed');
       }
