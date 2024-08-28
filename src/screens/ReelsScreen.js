@@ -82,7 +82,7 @@ export default function ReelsScreen() {
             console.log(fetchedData)
             const moreReels = fetchedData.map((reel, index) => ({
               id: (reelsData.length + index + 1).toString(),
-              videoUrl: reel.videoUrl || 'https://www.w3schools.com/html/mov_bbb.mp4', // Default if videoUrl is missing
+              videoUrl: reel.VideoURL ,//|| 'https://www.w3schools.com/html/mov_bbb.mp4', // Default if videoUrl is missing
               username: reel.username || `user${reelsData.length + index + 1}`, // Default if username is missing
               likes: reel.likes || 150 + reelsData.length * 10, // Default if likes are missing
               comments: reel.comments || 50 + reelsData.length * 5, // Default if comments are missing
