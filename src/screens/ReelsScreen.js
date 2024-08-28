@@ -100,34 +100,6 @@ export default function ReelsScreen() {
     }
   };
 
-  // Simulate loading more data
-  // const loadMoreReels = () => {
-  //   if (!loadingMore) {
-  //     setLoadingMore(true);
-  //     setTimeout(() => {
-  //       const moreReels = [
-  //         {
-  //           id: (reelsData.length + 1).toString(),
-  //           videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  //           username: `user${reelsData.length + 1}`,
-  //           likes: 150 + reelsData.length * 10,
-  //           comments: 50 + reelsData.length * 5,
-  //         },
-  //         {
-  //           id: (reelsData.length + 2).toString(),
-  //           videoUrl: 'https://www.w3schools.com/html/movie.mp4',
-  //           username: `user${reelsData.length + 2}`,
-  //           likes: 250 + reelsData.length * 10,
-  //           comments: 80 + reelsData.length * 5,
-  //         },
-  //       ];
-  //       setReelsData([...reelsData, ...moreReels]);
-  //       setLoadingMore(false);
-  //       setPage(page + 1);
-  //     }, 1500); // Simulating network delay
-  //   }
-  // };
-
   const renderItem = ({ item, index }) => (
     <View style={styles.container}>
       <Video
@@ -247,20 +219,3 @@ const loadReels = () => {
         setLoading(true);
       });
   };
-
-
-
-
-  // return (
-  //   <FlatList
-  //     data={reels}
-  //     renderItem={renderItem}
-  //     keyExtractor={(item, index) => index.toString()}
-  //     snapToInterval={height}
-  //     decelerationRate="fast"
-  //     showsVerticalScrollIndicator={false}
-  //     onEndReached={loadReels}
-  //     onEndReachedThreshold={0.5}
-  //     ListFooterComponent={renderFooter}
-  //   />
-  // );
