@@ -162,6 +162,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 9 / 16, // 9:16 aspect ratio
+  },
   video: {
     width: '100%',
     height: '100%',
@@ -191,31 +195,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loadingContainer: {
+    // position: 'absolute',
+    // top: height / 2 - 20,
+    // left: width / 2 - 20,
     position: 'absolute',
-    top: height / 2 - 20,
-    left: width / 2 - 20,
+    top: '50%', // Center vertically
+    left: '50%', // Center horizontally
+    transform: [{ translateX: -20 }, { translateY: -20 }], // Adjust for the size of the spinner
   },
 });
-
-
-const loadReels = () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-    axios.get(`http://192.168.1.12:9999/chat-service/api/reels?page=${page}&limit=10`)
-      .then(response => {
-        console.log('Video URL:', response);
-        console.log('Fetched data:', response.data);
-        if (response.data.length > 0) {
-          setReels(prevReels => [...prevReels, ...response.data]);
-          setPage(prevPage => prevPage + 1);
-        } else {
-          setHasMore(false);
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching reels', error);
-        setLoading(true);
-      });
-  };
