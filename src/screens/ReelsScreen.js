@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, Dimensions, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-import Video from 'react-native-video';
+import Video from 'expo-av';
 
 const { height } = Dimensions.get('window');
 
@@ -19,7 +19,7 @@ const ReelsScreen = () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
-    axios.get(`http://192.168.1.10:9999/chat-service/api/reels?page=${page}&limit=10`)
+    axios.get(`http://192.168.1.12:9999/chat-service/api/reels?page=${page}&limit=10`)
       .then(response => {
         console.log('Video URL:', response);
         console.log('Fetched data:', response.data);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const instance = axios.create({
-  baseURL: 'http://192.168.1.10:9999/chat-service/api',
+  baseURL: 'http://192.168.1.12:9999/chat-service/api',
   timeout: 1000,
 });
 

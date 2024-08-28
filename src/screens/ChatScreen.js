@@ -10,7 +10,7 @@ const ChatScreen = ({ route }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://192.168.1.10:9999/chat-service/api/ws');
+    const ws = new WebSocket('ws://192.168.1.12:9999/chat-service/api/ws');
 
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: 'login', phoneNumber }));
