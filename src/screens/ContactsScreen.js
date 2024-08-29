@@ -1,13 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  Button,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import * as Contacts from 'expo-contacts';
 import { useNavigation } from '@react-navigation/native';
-import { all } from 'axios';
+import axios from 'axios';
 
-export default function ContactsScreen() {
+
+const ContactsScreen = () => {
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredContacts, setFilteredContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -17,36 +30,48 @@ export default function ContactsScreen() {
         const { data } = await Contacts.getContactsAsync({
           fields: [Contacts.Fields.PhoneNumbers],
         });
-
-        if (data.length > 0) {
-          setContacts(data);
-          console.log("contact",data)
-          setFilteredContacts(data);
-        }
+        setContacts(data);
+        setFilteredContacts(data);
       }
     })();
   }, []);
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filtered = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredContacts(filtered);
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    if (text) {
+      const filtered = contacts.filter((contact) =>
+        contact.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredContacts(filtered);
+    } else {
+      setFilteredContacts(contacts);
+    }
   };
 
+  const handleContactPress = (contact) => {
+    if (contact.phoneNumbers && contact.phoneNumbers.length > 1) {
+      setSelectedContact(contact);
+      setModalVisible(true);
+    } else if (contact.phoneNumbers.length === 1) {
+      navigateToChat(contact.phoneNumbers[0].number);
+    }
+  };
 
-  const checkUserRegistration = async (phoneNumber) => {
+   async function navigateToChat (phoneNumber) {
+    setModalVisible(false);
     try {
-      const response = await fetch(`http://192.168.1.12:9999/chat-service/api/check-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phoneNumber }),
-      });
-
-      const result = await response.json();
+      // const response = await fetch(`http://192.168.1.12:9999/chat-service/api/check-user`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ phoneNumber }),
+      // });
+      const response = await axios.post('http://192.168.1.12:9999/chat-service/api/check-user', {
+        phoneNumber: phoneNumber,
+    });   
+      console.log(response.data)
+      const result = response.data;
 
       if (result.isRegistered) {
         // Navigate to the ChatScreen with the phone number if the user is registered
@@ -59,110 +84,90 @@ export default function ContactsScreen() {
       console.error('Error checking user registration:', error);
       Alert.alert('Error', 'An error occurred while checking registration status.');
     }
+
+
+
+    //navigation.navigate('ChatScreen', { phoneNumber });
   };
-
-
-  const handleSelectContact = (item) => {
-    
-    const phoneNumbers  = item.phoneNumbers;
-    console.log("contact****",phoneNumbers)
-    const allPhones = [];
-
-  //var loopData = ''
-  for(i=0; i < phoneNumbers.length; i++){
-
-    allPhones.push(`${phoneNumbers[i].number}`);
-
-    //loopData += `<li>${phoneNumbers[i].number}</li>`
-}
-const trimmedArray = allPhones.map(item => item.replace(/\s+/g, ''));
-const uniquePhoneNumber = [...new Set(trimmedArray)];
-console.log("allPhones7777777777777",allPhones)
-console.log("uniqueArray",uniquePhoneNumber)
-
-    navigation.navigate('ChatScreen', { uniquePhoneNumber :uniquePhoneNumber });
-
-///////////////////////////
-
-    // try {
-    //   const response = await fetch(`http://192.168.1.12:9999/chat-service/api/check-user`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ phoneNumber }),
-    //   });
-
-    //   const result = await response.json();
-
-    //   if (result.isRegistered) {
-    //     // Navigate to the ChatScreen with the phone number if the user is registered
-    //     navigation.navigate('ChatScreen', { phoneNumber });
-    //   } else {
-    //     // Show an alert if the user is not registered
-    //     Alert.alert('User Not Registered', 'The selected contact is not registered with the app.');
-    //   }
-    // } catch (error) {
-    //   console.error('Error checking user registration:', error);
-    //   Alert.alert('Error', 'An error occurred while checking registration status.');
-    // }
-
-
-////////////////////////////////////////////////////////
-
-
-
-  };
-
-  const renderItem = ({ item }) => (
-
-    <TouchableOpacity style={styles.contactItem} onPress={() => handleSelectContact(item)}>
-      <Text style={styles.contactName}>{item.name}</Text>
-      {item.phoneNumbers && <Text style={styles.contactNumber}>{item.phoneNumbers[0].number}</Text>}
-    </TouchableOpacity>
-  );
 
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.searchBar}
-        placeholder="Search contacts"
+        placeholder="Search Contacts"
         value={searchQuery}
         onChangeText={handleSearch}
+        style={styles.searchBar}
       />
       <FlatList
         data={filteredContacts}
         keyExtractor={(item) => item.id}
-        renderItem={renderItem}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleContactPress(item)}>
+            <Text style={styles.contactName}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
       />
+
+      {selectedContact && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Select a number for {selectedContact.name}:</Text>
+            {selectedContact.phoneNumbers.map((phone, index) => (
+              <Button
+                key={index}
+                title={phone.number}
+                onPress={() => navigateToChat(phone.number)}
+              />
+            ))}
+            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+          </View>
+        </Modal>
+      )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
+    paddingTop: 20,
   },
   searchBar: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  contactItem: {
-    paddingVertical: 15,
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderColor: '#ccc',
   },
   contactName: {
-    fontSize: 18,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
   },
-  contactNumber: {
-    fontSize: 14,
-    color: '#555',
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
+
+export default ContactsScreen;
