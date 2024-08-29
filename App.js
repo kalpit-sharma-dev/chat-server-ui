@@ -59,19 +59,13 @@ export const sendMessage = async (chatId, message) => {
 
 // Bottom Tabs for Home and Settings
 function HomeTabs(route) {
+ // console.log(route)
+ // const { value } = route.params; 
   return (
     <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} initialParams={route.params}  options={({ navigation }) => ({
-          title: 'Home',
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Chats',{ value: value })}
-              style={{ marginRight: 15 }}
-            >
-              <Icon name="comments" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })}/>
+        <Tab.Screen name="Chats" initialParams={route}>
+        {(props) => <ChatsScreen {...props} route={route} />}
+        </Tab.Screen>
         <Tab.Screen name="Search" component={SearchScreen} />
         <Tab.Screen name="Camera" component={CameraScreen} />
         <Tab.Screen name="Reels" component={ReelsScreen} />
@@ -90,7 +84,7 @@ const App = () => {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Verify" component={VerifyScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Chat" component={ChatScreen} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="Chats" component={ChatsScreen} />
         <Stack.Screen name="NewChat" component={NewChatScreen} />
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />

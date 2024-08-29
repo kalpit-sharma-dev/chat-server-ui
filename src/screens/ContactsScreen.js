@@ -1,59 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
-import Contacts from 'react-native-contacts';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import * as Contacts from 'expo-contacts';
+import { useNavigation } from '@react-navigation/native';
 
-export default function ContactsScreen({ navigation }) {
+export default function ContactsScreen() {
   const [contacts, setContacts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    async function loadContacts() {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-          {
-            title: 'Contacts Permission',
-            message: 'This app would like to view your contacts.',
-            buttonPositive: 'Please accept bare mortal',
-          }
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Contacts permission denied');
-          return;
+    (async () => {
+      const { status } = await Contacts.requestPermissionsAsync();
+      if (status === 'granted') {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers],
+        });
+
+        if (data.length > 0) {
+          setContacts(data);
+          setFilteredContacts(data);
         }
       }
-
-      Contacts.getAll()
-        .then((contacts) => {
-          setContacts(contacts);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-
-    loadContacts();
+    })();
   }, []);
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredContacts(filtered);
+  };
+
+  const handleSelectContact = (contact) => {
+    navigation.navigate('ChatScreen', { contact });
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.contactItem} 
-      onPress={() => {
-        // Handle contact selection (e.g., start a chat)
-        console.log('Selected contact:', item.givenName, item.familyName);
-      }}
-    >
-      <Text style={styles.contactName}>
-        {item.givenName} {item.familyName}
-      </Text>
+    <TouchableOpacity style={styles.contactItem} onPress={() => handleSelectContact(item.PhoneNumbers)}>
+      <Text style={styles.contactName}>{item.name}</Text>
+      {item.phoneNumbers && <Text style={styles.contactNumber}>{item.phoneNumbers[0].number}</Text>}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search contacts"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
       <FlatList
-        data={contacts}
+        data={filteredContacts}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        keyExtractor={(item) => item.recordID}
       />
     </View>
   );
@@ -62,15 +64,27 @@ export default function ContactsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 10,
     backgroundColor: '#fff',
   },
+  searchBar: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
   contactItem: {
-    padding: 15,
+    paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
   contactName: {
     fontSize: 18,
+  },
+  contactNumber: {
+    fontSize: 14,
+    color: '#555',
   },
 });

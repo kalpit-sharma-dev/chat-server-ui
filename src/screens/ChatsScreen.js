@@ -10,9 +10,11 @@ const ChatsScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const [chats, setChats] = useState([]);
-  const { value } = route.params;
+  console.log(route)
+  console.log(route.route.params)
+  const { value } = route.route.params;
 
-console.log(value)
+//console.log(value)
   useEffect(() => {
     // Fetch chats from backend
     fetch(`http://192.168.1.12:9999/chat-service/api/chats/${value}`)

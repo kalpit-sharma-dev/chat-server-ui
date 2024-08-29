@@ -4,6 +4,7 @@ import WebSocket from 'react-native-websocket';
 import { addReaction, editMessage, deleteMessage } from '../services/api';
 
 const ChatScreen = ({ route }) => {
+  console.log(route)
   const { phoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
