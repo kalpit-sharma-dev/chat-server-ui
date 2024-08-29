@@ -103,6 +103,9 @@ const ChatScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>{phoneNumber}</Text>
+      </View>
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -136,6 +139,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ECE5DD',
+  },
+  header: {
+    padding: 10,
+    backgroundColor: '#25D366',
+    alignItems: 'flex-start',
+  },
+  headerText: {
+    fontSize: 18,
+    color: '#FFF',
+    fontWeight: 'bold',
   },
   chatList: {
     flex: 1,
