@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useContext } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
 //import WebSocket from 'react-native-websocket';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,16 +18,17 @@ const removeAllSpaces = (str) => {
 };
 
 const ChatScreen = ({ route }) => {
+  const { token } = useContext(AuthContext);
   const { phone } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [socket, setSocket] = useState();
 
   const phoneNumber = removeAllSpaces(phone);
-
+  console.log("#####tokenchatscreen######### ",token)
   useEffect(() => {
     console.log("web socket starting url")
-    const ws = new WebSocket('ws://192.168.1.12:9999/chat-service/api/ws');
+    const ws = new WebSocket(`ws://192.168.1.12:9999/chat-service/api/ws?token=${token}`);
     console.log("web socket url created 1")
     ws.onopen = () => {
       console.log('WebSocket connection opened');
@@ -55,7 +57,7 @@ const ChatScreen = ({ route }) => {
         ws.close(); // Close the WebSocket connection on cleanup
       }
     };
-  }, [phoneNumber]);
+  }, [phoneNumber, token]);
 
   const sendMessage = () => {
     console.log("socket3333",socket)
@@ -64,7 +66,7 @@ const ChatScreen = ({ route }) => {
     if (socket && input.trim()) {
       console.log("socket5555",socket)
       if (socket.readyState === WebSocket.OPEN) {
-        console.log("socket6666",socket)
+        console.log("socket6666",socket, phoneNumber)
         const message = { sender: phoneNumber, content: input };
         socket.send(JSON.stringify(message));
         setInput('');

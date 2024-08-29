@@ -17,6 +17,9 @@ import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import CameraScreen from './src/screens/CameraScreen';
+import { AuthProvider } from './src/context/AuthContext';
+
+
 
 import logo from './src/logo.svg';
 import './src/App.css';
@@ -78,6 +81,7 @@ const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    <AuthProvider>
     <ChatProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Register">
@@ -93,6 +97,7 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
     </ChatProvider>
+    </AuthProvider>
   );
 };
 
