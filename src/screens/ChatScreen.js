@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext , useRef ,memo} from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +22,7 @@ const ChatScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [socket, setSocket] = useState(null);
-
+  const flatListRef = useRef()
   const phoneNumber = removeAllSpaces(phone);
 
   useEffect(() => {
@@ -37,6 +37,10 @@ const ChatScreen = ({ route }) => {
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data);
       setMessages((prevMessages) => [...prevMessages, message]);
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }
+
     };
 
     ws.onerror = (error) => {
@@ -62,6 +66,9 @@ const ChatScreen = ({ route }) => {
         socket.send(JSON.stringify(message));
         setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message
         setInput('');
+        if (flatListRef.current) {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }
       } else {
         console.warn('WebSocket is not open. ReadyState:', socket.readyState);
       }
@@ -70,12 +77,12 @@ const ChatScreen = ({ route }) => {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const MessageItem = memo(({ item, phoneNumber }) => {
     const isSender = item.sender === phoneNumber;
     return (
       <View style={[styles.messageContainer, isSender ? styles.sender : styles.receiver]}>
         <Text style={styles.messageText}>{item.content}</Text>
-        <Text style={styles.timeStamp}>{item.timestamp}</Text>
+        <Text style={styles.timeStamp}>{new Date(item.timestamp).toLocaleTimeString()}</Text>
         {isSender && (
           <View style={styles.messageOptions}>
             <TouchableOpacity onPress={() => handleEditMessage(item.id, 'Edited message')}>
@@ -88,17 +95,27 @@ const ChatScreen = ({ route }) => {
         )}
       </View>
     );
-  };
+  });
+
+  const renderItem = ({ item }) => (
+    <MessageItem item={item} phoneNumber={phoneNumber} />
+  );
 
   return (
     <View style={styles.container}>
       <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item.timestamp} // Use timestamp as key for uniqueness
         style={styles.chatList}
         contentContainerStyle={{ paddingBottom: 20 }}
-        inverted // To display the latest message at the bottom
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        windowSize={10}
+
+        //inverted // To display the latest message at the bottom
       />
       <View style={styles.inputContainer}>
         <TextInput
