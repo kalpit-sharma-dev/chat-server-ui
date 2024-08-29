@@ -62,7 +62,7 @@ const ChatScreen = ({ route }) => {
   const sendMessage = () => {
     if (socket && input.trim()) {
       if (socket.readyState === WebSocket.OPEN) {
-        const message = { sender: phoneNumber, content: input, timestamp: new Date().toISOString() };
+        const message = { sender: phoneNumber, receiver : phoneNumber, type:"login", content: input, timestamp: new Date().toISOString() };
         socket.send(JSON.stringify(message));
         setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message
         setInput('');
