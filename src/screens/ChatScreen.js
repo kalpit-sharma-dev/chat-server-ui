@@ -5,6 +5,15 @@ import { addReaction, editMessage, deleteMessage } from '../services/api';
 import { Ionicons } from '@expo/vector-icons'; // For icons
 
 const ChatScreen = ({ route }) => {
+
+  // const { phoneNumbers } = route.params.item.phoneNumbers[0];
+  // console.log("route$$$$$$$$$$$$$$$$$$$$$$",route)
+  // console.log("item$$$$$$$$$$$$$$$$$$$$$$",phoneNumbers)
+//   var loopData = ''
+//   for(i=0; i < item; i++){
+//     loopData += `<li>${item[i].name}</li>`
+// }
+
   const { phoneNumber } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -25,7 +34,7 @@ const ChatScreen = ({ route }) => {
     setSocket(ws);
 
     return () => {
-      ws.close();
+     // ws.close();
     };
   }, []);
 
