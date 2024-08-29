@@ -68,7 +68,7 @@ const ContactsScreen = () => {
 
       if (result.isRegistered) {
         // Navigate to the ChatScreen with the phone number if the user is registered
-        navigation.navigate('ChatScreen', { phoneNumber });
+        navigation.navigate('ChatScreen', { phone : phoneNumber });
       } else {
         // Show an alert if the user is not registered
         Alert.alert('User Not Registered', 'The selected contact is not registered with the app.');

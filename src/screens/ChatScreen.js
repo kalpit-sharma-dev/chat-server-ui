@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import WebSocket from 'react-native-websocket';
-import { addReaction, editMessage, deleteMessage } from '../services/api';
-import { Ionicons } from '@expo/vector-icons'; // For icons
+import { Ionicons } from '@expo/vector-icons';
+
+const substring = '+91';
+
+const removeAllSpaces = (str) => {
+  const contain = str.includes(substring);
+  if (!contain) {
+    str = substring + str;
+  }
+  if (typeof str === 'string') {
+    return str.replace(/\s+/g, '');
+  }
+  return ''; 
+};
 
 const ChatScreen = ({ route }) => {
-
-  // const { phoneNumbers } = route.params.item.phoneNumbers[0];
-  // console.log("route$$$$$$$$$$$$$$$$$$$$$$",route)
-  // console.log("item$$$$$$$$$$$$$$$$$$$$$$",phoneNumbers)
-//   var loopData = ''
-//   for(i=0; i < item; i++){
-//     loopData += `<li>${item[i].name}</li>`
-// }
-
-  const { phoneNumber } = route.params;
+  const { phone } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [socket, setSocket] = useState(null);
+
+  const phoneNumber = removeAllSpaces(phone);
 
   useEffect(() => {
     const ws = new WebSocket('ws://192.168.1.12:9999/chat-service/api/ws');
 
     ws.onopen = () => {
+      console.log('WebSocket connection opened');
       ws.send(JSON.stringify({ type: 'login', phoneNumber }));
+      setSocket(ws); // Set the socket after connection is opened
     };
 
     ws.onmessage = (e) => {
@@ -31,18 +38,29 @@ const ChatScreen = ({ route }) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
-    setSocket(ws);
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+      setSocket(null); // Reset the socket when connection is closed
+    };
 
     return () => {
-     // ws.close();
+      if (ws) {
+        ws.close(); // Close the WebSocket connection on cleanup
+      }
     };
-  }, []);
+  }, [phoneNumber]);
 
   const sendMessage = () => {
     if (socket && input.trim()) {
       const message = { sender: phoneNumber, content: input };
       socket.send(JSON.stringify(message));
       setInput('');
+    } else {
+      console.warn('WebSocket is not open or input is empty');
     }
   };
 
