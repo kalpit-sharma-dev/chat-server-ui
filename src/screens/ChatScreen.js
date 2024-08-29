@@ -1,7 +1,6 @@
-import React, { useEffect, useState ,useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
-//import WebSocket from 'react-native-websocket';
 import { Ionicons } from '@expo/vector-icons';
 
 const substring = '+91';
@@ -22,19 +21,17 @@ const ChatScreen = ({ route }) => {
   const { phone } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [socket, setSocket] = useState();
+  const [socket, setSocket] = useState(null);
 
   const phoneNumber = removeAllSpaces(phone);
-  console.log("#####tokenchatscreen######### ",token)
+
   useEffect(() => {
-    console.log("web socket starting url")
+    console.log("WebSocket starting with URL");
     const ws = new WebSocket(`ws://192.168.1.12:9999/chat-service/api/ws?token=${token}`);
-    console.log("web socket url created 1")
+
     ws.onopen = () => {
       console.log('WebSocket connection opened');
-      ws.send(JSON.stringify({ type: 'login', phoneNumber }));
       setSocket(ws); // Set the socket after connection is opened
-      console.log("socket1111",socket)
     };
 
     ws.onmessage = (e) => {
@@ -48,7 +45,6 @@ const ChatScreen = ({ route }) => {
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
-      console.log("socket2222",socket)
       setSocket(null); // Reset the socket when connection is closed
     };
 
@@ -57,18 +53,14 @@ const ChatScreen = ({ route }) => {
         ws.close(); // Close the WebSocket connection on cleanup
       }
     };
-  }, [phoneNumber, token]);
+  }, [token]);
 
   const sendMessage = () => {
-    console.log("socket3333",socket)
-    console.log('Sending message:', input); // Debug log for input value
-    console.log("socket4444",socket)
     if (socket && input.trim()) {
-      console.log("socket5555",socket)
       if (socket.readyState === WebSocket.OPEN) {
-        console.log("socket6666",socket, phoneNumber)
-        const message = { sender: phoneNumber, content: input };
+        const message = { sender: phoneNumber, content: input, timestamp: new Date().toISOString() };
         socket.send(JSON.stringify(message));
+        setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message
         setInput('');
       } else {
         console.warn('WebSocket is not open. ReadyState:', socket.readyState);
@@ -103,7 +95,7 @@ const ChatScreen = ({ route }) => {
       <FlatList
         data={messages}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.timestamp} // Use timestamp as key for uniqueness
         style={styles.chatList}
         contentContainerStyle={{ paddingBottom: 20 }}
         inverted // To display the latest message at the bottom
