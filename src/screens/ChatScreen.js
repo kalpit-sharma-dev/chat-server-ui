@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import WebSocket from 'react-native-websocket';
+//import WebSocket from 'react-native-websocket';
 import { Ionicons } from '@expo/vector-icons';
 
 const substring = '+91';
