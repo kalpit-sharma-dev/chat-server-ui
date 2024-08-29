@@ -60,13 +60,6 @@ const ContactsScreen = () => {
    async function navigateToChat (phoneNumber) {
     setModalVisible(false);
     try {
-      // const response = await fetch(`http://192.168.1.12:9999/chat-service/api/check-user`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ phoneNumber }),
-      // });
       const response = await axios.post('http://192.168.1.12:9999/chat-service/api/check-user', {
         phoneNumber: phoneNumber,
     });   
