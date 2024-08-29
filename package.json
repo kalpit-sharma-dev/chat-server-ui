@@ -24,6 +24,7 @@
     "expo": "~51.0.28",
     "expo-av": "~14.0.7",
     "expo-camera": "~15.0.15",
+    "expo-contacts": "~13.0.5",
     "expo-image-picker": "~15.0.7",
     "expo-linear-gradient": "~13.0.2",
     "expo-status-bar": "~1.12.1",
@@ -40,8 +41,7 @@
     "react-native-video": "^6.4.5",
     "react-native-websocket": "^1.0.2",
     "react-navigation": "^5.0.0",
-    "styled-components": "^6.1.12",
-    "expo-contacts": "~13.0.5"
+    "styled-components": "^6.1.12"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -20,17 +20,19 @@ const ChatScreen = ({ route }) => {
   const { phone } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState();
 
   const phoneNumber = removeAllSpaces(phone);
 
   useEffect(() => {
+    console.log("web socket starting url")
     const ws = new WebSocket('ws://192.168.1.12:9999/chat-service/api/ws');
-
+    console.log("web socket url created 1")
     ws.onopen = () => {
       console.log('WebSocket connection opened');
       ws.send(JSON.stringify({ type: 'login', phoneNumber }));
       setSocket(ws); // Set the socket after connection is opened
+      console.log("socket1111",socket)
     };
 
     ws.onmessage = (e) => {
@@ -44,6 +46,7 @@ const ChatScreen = ({ route }) => {
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
+      console.log("socket2222",socket)
       setSocket(null); // Reset the socket when connection is closed
     };
 
@@ -55,12 +58,21 @@ const ChatScreen = ({ route }) => {
   }, [phoneNumber]);
 
   const sendMessage = () => {
+    console.log("socket3333",socket)
+    console.log('Sending message:', input); // Debug log for input value
+    console.log("socket4444",socket)
     if (socket && input.trim()) {
-      const message = { sender: phoneNumber, content: input };
-      socket.send(JSON.stringify(message));
-      setInput('');
+      console.log("socket5555",socket)
+      if (socket.readyState === WebSocket.OPEN) {
+        console.log("socket6666",socket)
+        const message = { sender: phoneNumber, content: input };
+        socket.send(JSON.stringify(message));
+        setInput('');
+      } else {
+        console.warn('WebSocket is not open. ReadyState:', socket.readyState);
+      }
     } else {
-      console.warn('WebSocket is not open or input is empty');
+      console.warn('Input is empty');
     }
   };
 
