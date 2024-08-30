@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet ,Alert } from 'react-native';
 import { Camera , CameraView} from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-
+import * as MediaLibrary from 'expo-media-library';
 
 
 // Define constants for permission status
@@ -24,10 +24,11 @@ export default function CameraScreen() {
 
   useEffect(() => {
     (async () => {
-     // const { status } = await Camera.requestCameraPermissionsAsync();
       const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
       const { status: audioStatus } = await Camera.requestMicrophonePermissionsAsync();
-      setPermission(cameraStatus === 'granted' && audioStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);
+      const { status: mediaLibraryStatus } = await MediaLibrary.requestPermissionsAsync();
+
+      setPermission(cameraStatus === 'granted' && audioStatus === 'granted' && mediaLibraryStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);
     })();
   }, []);
 
@@ -42,7 +43,9 @@ export default function CameraScreen() {
         <TouchableOpacity onPress={async () => {
           const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
           const { status: audioStatus } = await Camera.requestMicrophonePermissionsAsync();
-          setPermission(cameraStatus === 'granted' && audioStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);}}>
+          const { status: mediaLibraryStatus } = await MediaLibrary.requestPermissionsAsync();
+
+          setPermission(cameraStatus === 'granted' && audioStatus === 'granted' &&  mediaLibraryStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);}}>
           <Text style={styles.permissionButton}>Grant Permission</Text>
         </TouchableOpacity>
       </View>
