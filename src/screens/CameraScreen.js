@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet ,Alert } from 'react-native';
 import { Camera , CameraView} from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
-
+import { useNavigation } from '@react-navigation/native';
 
 // Define constants for permission status
 const PERMISSION_STATUS = {
@@ -13,9 +13,8 @@ const PERMISSION_STATUS = {
 };
 
 export default function CameraScreen() {
-
+  const navigation = useNavigation();
   const [permission, setPermission] = useState(PERMISSION_STATUS.LOADING);
-
   const cameraRef = useRef(null);
   const [facing, setFacing] = useState('back');
   const [flash, setFlash] = useState('off');
@@ -76,23 +75,35 @@ export default function CameraScreen() {
         const asset = await MediaLibrary.createAssetAsync(photo.uri);
         console.log('Photo saved to:', asset.uri);
         Alert.alert('Photo Saved', 'Your photo has been saved to your gallery.');
+        navigation.navigate('PostPhotoScreen', { photoUri: photo.uri });
       }
     } else {
       console.log('cameraRef.current 1');
       if (cameraRef.current) {
         console.log('cameraRef.current 2');
-        if (isRecording) {
-          const video = await cameraRef.current.stopRecording();
+          if (isRecording) {
+          console.log('cameraRef.current 3');
+          await cameraRef.current.stopRecording();
           setIsRecording(false);
-
-          // Save the video to the device
-          const asset = await MediaLibrary.createAssetAsync(video.uri);
-          console.log('Video saved to:', asset.uri);
-          Alert.alert('Video Saved', 'Your video has been saved to your gallery.');
+          console.log('Recording stopped');
         } else {
           setIsRecording(true);
-          await cameraRef.current.recordAsync();
-          
+          const options = { quality: '720p', maxDuration: 60 };
+          const video = await cameraRef.current.recordAsync(options);
+          const source = video.uri;
+            if (source){
+                console.log('now you have a uri');
+                console.log('Video recorded:', video);
+                navigation.navigate('PostVideoScreen', { videoUri: video.uri });
+             }
+        
+
+        // Save to media library
+        const asset = await MediaLibrary.createAssetAsync(video.uri);
+        console.log('Video saved to media library:', asset);
+
+        setIsRecording(false);
+ 
         }
       }
     }

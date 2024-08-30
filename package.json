@@ -45,7 +45,8 @@
     "react-native-websocket": "^1.0.2",
     "react-navigation": "^5.0.0",
     "styled-components": "^6.1.12",
-    "expo-media-library": "~16.0.4"
+    "expo-media-library": "~16.0.4",
+    "expo-file-system": "~17.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
