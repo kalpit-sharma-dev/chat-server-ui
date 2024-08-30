@@ -1,6 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { Video } from 'expo-av';
 import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import React, { useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MentionsTextInput from 'react-native-mentions';
@@ -11,8 +13,8 @@ import { fetchUserPosts, sendNotification } from '../redux/actions/index';
 import { container, navbar, text, utils } from '../styling/style';
 
 
-require("firebase/firestore")
-require("firebase/firebase-storage")
+// require("firestore")
+// require("storage")
 
 
 
