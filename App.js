@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet, Text ,TouchableOpacity  } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as firebase from 'firebase';
+import firebase from '@react-native-firebase/app'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './src/screens/RegisterScreen';
