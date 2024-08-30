@@ -71,21 +71,27 @@ export default function CameraScreen() {
       if (cameraRef.current) {
         const photo = await cameraRef.current.takePictureAsync();
         console.log('Photo taken:', photo);
+
+        // Save the photo to the device
+        const asset = await MediaLibrary.createAssetAsync(photo.uri);
+        console.log('Photo saved to:', asset.uri);
+        Alert.alert('Photo Saved', 'Your photo has been saved to your gallery.');
       }
     } else {
       console.log('cameraRef.current 1');
       if (cameraRef.current) {
         console.log('cameraRef.current 2');
         if (isRecording) {
-          console.log('cameraRef.current 3', isRecording);
-          await cameraRef.current.stopRecording();
-          console.log('cameraRef.current 4', isRecording);
+          const video = await cameraRef.current.stopRecording();
           setIsRecording(false);
+
+          // Save the video to the device
+          const asset = await MediaLibrary.createAssetAsync(video.uri);
+          console.log('Video saved to:', asset.uri);
+          Alert.alert('Video Saved', 'Your video has been saved to your gallery.');
         } else {
           setIsRecording(true);
-          console.log('cameraRef.current 5', isRecording);
-          const video = await cameraRef.current.recordAsync();
-          console.log('Video recorded:', video);
+          await cameraRef.current.recordAsync();
           
         }
       }
