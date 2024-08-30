@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet, Text ,TouchableOpacity  } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import * as firebase from 'firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -20,6 +20,7 @@ import CameraScreen from './src/screens/CameraScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import PostVideoScreen from './src/screens/PostVideoScreen';
 import PostPhotoScreen from './src/screens/PostPhotoScreen';
+import Save from './src/screens/Save';
 
 
 
@@ -31,6 +32,10 @@ const Tab = createBottomTabNavigator();
 
 
 const API_URL = 'http://192.168.1.12:9999/chat-service/api'; // Replace with your actual API URL
+
+
+
+
 
 export const getChats = async () => {
   try {
@@ -82,6 +87,25 @@ function HomeTabs(route) {
 const Stack = createStackNavigator();
 
 const App = () => {
+
+
+  const firebaseConfig = {
+    apiKey: "****",
+    authDomain: "****",
+    databaseURL: "****",
+    projectId: "****",
+    storageBucket: "****",
+    messagingSenderId: "****",
+    appId: "****",
+    measurementId: "****"
+  };
+  
+  if (firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig)
+  }
+
+
+
   return (
     <AuthProvider>
     <ChatProvider>
@@ -96,6 +120,7 @@ const App = () => {
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
         <Stack.Screen name="Reels" component={ReelsScreen} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        <Stack.Screen name="Save" component={Save} />
         <Stack.Screen name="PostVideoScreen" component={PostVideoScreen} options={{ title: 'Edit Video' }} />
         <Stack.Screen name="PostPhotoScreen" component={PostPhotoScreen} options={{ title: 'Edit Photo' }} />
 
