@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet ,Alert } from 'react-native';
 import { Camera , CameraView} from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -14,21 +14,20 @@ const PERMISSION_STATUS = {
 
 export default function CameraScreen() {
 
-  //const [permission, setPermission] = useState("");
-
   const [permission, setPermission] = useState(PERMISSION_STATUS.LOADING);
 
   const cameraRef = useRef(null);
   const [facing, setFacing] = useState('back');
   const [flash, setFlash] = useState('off');
-  
-  
+  const [isRecording, setIsRecording] = useState(false);
+  const [mode, setMode] = useState('picture'); 
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      console.log("status%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ", typeof status)
-      setPermission(status === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);
+     // const { status } = await Camera.requestCameraPermissionsAsync();
+      const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
+      const { status: audioStatus } = await Camera.requestMicrophonePermissionsAsync();
+      setPermission(cameraStatus === 'granted' && audioStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);
     })();
   }, []);
 
@@ -41,11 +40,9 @@ export default function CameraScreen() {
       <View style={styles.container}>
         <Text style={styles.message}>We need your permission to show the camera</Text>
         <TouchableOpacity onPress={async () => {
-          const { status } = await Camera.requestCameraPermissionsAsync();
-          console.log("status$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ", typeof status)
-          console.log("status$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ", typeof flash)
-          console.log("status$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ ", typeof facing)
-          setPermission(status === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);}}>
+          const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
+          const { status: audioStatus } = await Camera.requestMicrophonePermissionsAsync();
+          setPermission(cameraStatus === 'granted' && audioStatus === 'granted' ? PERMISSION_STATUS.GRANTED : PERMISSION_STATUS.DENIED);}}>
           <Text style={styles.permissionButton}>Grant Permission</Text>
         </TouchableOpacity>
       </View>
@@ -56,30 +53,60 @@ export default function CameraScreen() {
     setFacing(facing === 'back' ? 'front' : 'back');
   }
 
-  async function takePicture() {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      console.log('Photo taken:', photo);
+  function toggleFlash () {
+    setFlash(flash === 'off' ? 'on' : 'off');
+  };
+
+
+  const switchMode = () => {
+    setMode(mode === 'picture' ? 'picture' : 'video');
+  };
+
+
+  const handleCapture = async () => {
+    if (mode === 'picture') {
+      if (cameraRef.current) {
+        const photo = await cameraRef.current.takePictureAsync();
+        console.log('Photo taken:', photo);
+      }
+    } else {
+      if (cameraRef.current) {
+        if (isRecording) {
+          await cameraRef.current.stopRecording();
+          setIsRecording(false);
+        } else {
+          const video = await cameraRef.current.recordAsync();
+          console.log('Video recorded:', video);
+          setIsRecording(true);
+        }
+      }
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <CameraView
         style={styles.camera}
-        type={facing === 'back' ? 'back' : 'front'}
-        flashMode={flash === 'on' ? 'on' : 'off'}
+        facing={facing}
+        flash={flash}
         ref={cameraRef}
       >
         <View style={styles.controlContainer}>
+          <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
+            <Ionicons name={'on' ? "flash" : "flash-off"} size={24} color="white" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconButton} onPress={switchMode}>
+            <Text style={styles.modeButtonText}>{mode === 'picture' ? 'Video' : 'Photo'}</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.iconButton} onPress={toggleCameraFacing}>
             <Ionicons name="camera-reverse" size={24} color="white" />
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
-            <View style={styles.captureButtonInner} />
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
+          <View style={[styles.captureButtonInner, { backgroundColor: isRecording ? 'red' : 'white' }]} />
+        </TouchableOpacity>
       </CameraView>
     </View>
   );
@@ -105,18 +132,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
   },
+  modeButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   captureButton: {
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'transparent',
+  },
+  captureButtonInner: {
     width: 70,
     height: 70,
     borderRadius: 35,
     backgroundColor: 'white',
   },
-  captureButtonInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'red',
+  message: {
+    color: 'white',
+    fontSize: 18,
+  },
+  permissionButton: {
+    color: 'blue',
+    fontSize: 18,
   },
 });
