@@ -70,19 +70,20 @@ export default function CameraScreen() {
         console.log('Photo taken:', photo);
       }
     } else {
-      console.log('cameraRef.current 1', cameraRef.current);
+      console.log('cameraRef.current 1');
       if (cameraRef.current) {
-        console.log('cameraRef.current 2', cameraRef.current);
+        console.log('cameraRef.current 2');
         if (isRecording) {
-          console.log('cameraRef.current 3', cameraRef.current , isRecording);
+          console.log('cameraRef.current 3', isRecording);
           await cameraRef.current.stopRecording();
-          console.log('cameraRef.current 4', cameraRef.current , isRecording);
+          console.log('cameraRef.current 4', isRecording);
           setIsRecording(false);
         } else {
-          console.log('cameraRef.current 5', cameraRef.current , isRecording);
+          setIsRecording(true);
+          console.log('cameraRef.current 5', isRecording);
           const video = await cameraRef.current.recordAsync();
           console.log('Video recorded:', video);
-          setIsRecording(true);
+          
         }
       }
     }
