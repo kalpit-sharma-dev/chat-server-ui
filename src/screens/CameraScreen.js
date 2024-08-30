@@ -59,7 +59,7 @@ export default function CameraScreen() {
 
 
   const switchMode = () => {
-    setMode(mode === 'picture' ? 'picture' : 'video');
+    setMode(mode === 'picture' ? 'video' : 'picture');
   };
 
 
@@ -70,11 +70,16 @@ export default function CameraScreen() {
         console.log('Photo taken:', photo);
       }
     } else {
+      console.log('cameraRef.current 1', cameraRef.current);
       if (cameraRef.current) {
+        console.log('cameraRef.current 2', cameraRef.current);
         if (isRecording) {
+          console.log('cameraRef.current 3', cameraRef.current , isRecording);
           await cameraRef.current.stopRecording();
+          console.log('cameraRef.current 4', cameraRef.current , isRecording);
           setIsRecording(false);
         } else {
+          console.log('cameraRef.current 5', cameraRef.current , isRecording);
           const video = await cameraRef.current.recordAsync();
           console.log('Video recorded:', video);
           setIsRecording(true);
@@ -97,7 +102,7 @@ export default function CameraScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.iconButton} onPress={switchMode}>
-            <Text style={styles.modeButtonText}>{mode === 'picture' ? 'Video' : 'Photo'}</Text>
+            <Text style={styles.modeButtonText}>{mode === 'picture' ? 'Photo' : 'Video'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.iconButton} onPress={toggleCameraFacing}>
