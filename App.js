@@ -90,14 +90,14 @@ const App = () => {
 
 
   const firebaseConfig = {
-    apiKey: "****",
-    authDomain: "****",
-    databaseURL: "****",
-    projectId: "****",
-    storageBucket: "****",
-    messagingSenderId: "****",
-    appId: "****",
-    measurementId: "****"
+    apiKey: "AIzaSyD3y3SarBeGSZqHukHb7WIAxT2sUx7OeC4",
+    authDomain: "text-60da4.firebaseapp.com",
+    databaseURL: "https://text-60da4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "text-60da4",
+    storageBucket: "text-60da4.appspot.com",
+    messagingSenderId: "940973073875",
+    appId: "1:940973073875:web:ae9820516f2ade80847b26",
+    measurementId: "G-03XBR9Z5LZ"
   };
   
   if (firebase.apps.length === 0) {
