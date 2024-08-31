@@ -1,8 +1,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet, Text ,TouchableOpacity  } from 'react-native';
-//import Icon from 'react-native-vector-icons/FontAwesome';
-//import firebase from '@react-native-firebase/app'
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import firebase from '@react-native-firebase/app'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './src/screens/RegisterScreen';
@@ -21,6 +20,7 @@ import CameraScreen from './src/screens/CameraScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import PostVideoScreen from './src/screens/PostVideoScreen';
 import PostPhotoScreen from './src/screens/PostPhotoScreen';
+import Save from './src/screens/Save';
 
 
 
@@ -89,20 +89,20 @@ const Stack = createStackNavigator();
 const App = () => {
 
 
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyD3y3SarBeGSZqHukHb7WIAxT2sUx7OeC4",
-  //   authDomain: "text-60da4.firebaseapp.com",
-  //   databaseURL: "https://text-60da4-default-rtdb.asia-southeast1.firebasedatabase.app",
-  //   projectId: "text-60da4",
-  //   storageBucket: "text-60da4.appspot.com",
-  //   messagingSenderId: "940973073875",
-  //   appId: "1:940973073875:web:ae9820516f2ade80847b26",
-  //   measurementId: "G-03XBR9Z5LZ"
-  // };
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3y3SarBeGSZqHukHb7WIAxT2sUx7OeC4",
+    authDomain: "text-60da4.firebaseapp.com",
+    databaseURL: "https://text-60da4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "text-60da4",
+    storageBucket: "text-60da4.appspot.com",
+    messagingSenderId: "940973073875",
+    appId: "1:940973073875:web:ae9820516f2ade80847b26",
+    measurementId: "G-03XBR9Z5LZ"
+  };
   
-  // if (firebase.apps.length === 0) {
-  //   firebase.initializeApp(firebaseConfig)
-  // }
+  if (firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig)
+  }
 
 
 
@@ -120,6 +120,7 @@ const App = () => {
         <Stack.Screen name="ContactsScreen" component={ContactsScreen} />
         <Stack.Screen name="Reels" component={ReelsScreen} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        <Stack.Screen name="Save" component={Save} />
         <Stack.Screen name="PostVideoScreen" component={PostVideoScreen} options={{ title: 'Edit Video' }} />
         <Stack.Screen name="PostPhotoScreen" component={PostPhotoScreen} options={{ title: 'Edit Photo' }} />
 

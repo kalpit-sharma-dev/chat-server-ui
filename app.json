@@ -7,15 +7,6 @@
       "eas": {
         "projectId": "3b9cf8c2-be6f-417e-aa0b-ec1b2b8aafcb"
       }
-    },
-    "android": {
-      "googleServicesFile": "./google-services.json",
-      "package": "com.kalpitsharmadev.chatserverui"
-    },
-    "ios": {
-      "bundleIdentifier": "com.kalpitsharmadev.chatserverui",
-      "googleServicesFile": "./GoogleService-Info.plist"
     }
-
   }
 }

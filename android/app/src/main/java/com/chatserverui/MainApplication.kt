@@ -1,4 +1,4 @@
-package com.kalpitsharmadev.chatserverui
+package com.chatserverui
 
 import android.app.Application
 import android.content.res.Configuration
