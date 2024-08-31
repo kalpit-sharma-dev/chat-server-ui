@@ -1,4 +1,4 @@
-package com.chatserverui
+package com.kalpitsharmadev.chatserverui
 
 import android.os.Build
 import android.os.Bundle

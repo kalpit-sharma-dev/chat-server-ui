@@ -1,4 +1,4 @@
-rootProject.name = 'chatserverui'
+rootProject.name = 'chat-server-ui'
 
 dependencyResolutionManagement {
   versionCatalogs {
