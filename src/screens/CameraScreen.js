@@ -15,12 +15,14 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
 const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
 
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 
 
 export default function CameraScreen(props) {
   try{
+    const PAGE_SIZE = 500;
     const [hasPermission, setHasPermission] = useState(null);
     const [cameraType, setCameraType] = useState('back');
     const [isPreview, setIsPreview] = useState(false);
@@ -44,7 +46,7 @@ export default function CameraScreen(props) {
             const audioPermissions = await Audio.requestPermissionsAsync();
 
             if (cameraPermissions.status === 'granted' && audioPermissions.status === 'granted' && galleryPermissions.status === 'granted') {
-                const getPhotos = await MediaLibrary.getAssetsAsync({ sortBy: ['creationTime'], mediaType: ['photo', 'video'] })
+                const getPhotos = await MediaLibrary.getAssetsAsync({ sortBy: ['creationTime'], mediaType: ['photo', 'video'], first: PAGE_SIZE , quality: 0.5 })
                 setGalleryItems(getPhotos)
                 setGalleryPickedImage(getPhotos.assets[0])
                 setHasPermission(true)
@@ -120,22 +122,30 @@ export default function CameraScreen(props) {
         );
     };
     const handleGoToSaveOnGalleryPick = async () => {
-        let type = galleryPickedImage.mediaType == 'video' ? 0 : 1
-
-
+        let type = galleryPickedImage.mediaType == 'video' ? 0 : 1;
+    
         const loadedAsset = await MediaLibrary.getAssetInfoAsync(galleryPickedImage);
-        let imageSource = null
-        if (type == 0) {
-            imageSource = await generateThumbnail(galleryPickedImage.uri)
-
+        let imageSource = null;
+        
+        if (type === 0) {
+            imageSource = await generateThumbnail(galleryPickedImage.uri);
+        } else {
+            // Compress the image before saving
+            const manipulatedImage = await ImageManipulator.manipulateAsync(
+                loadedAsset.localUri || galleryPickedImage.uri,
+                [{ resize: { width: 800 } }], // Resize to a width of 800px while maintaining aspect ratio
+                { compress: 1 , format: ImageManipulator.SaveFormat.JPEG } // Compress the image and save as JPEG
+            );
+            imageSource = manipulatedImage.uri;
         }
-
+    
         props.navigation.navigate('Save', {
             source: loadedAsset.localUri,
             type,
             imageSource
-        })
+        });
     }
+    
 
     const renderCaptureControl = () => (
         <View>
@@ -216,7 +226,7 @@ export default function CameraScreen(props) {
                         numColumns={3}
                         horizontal={false}
                         data={galleryItems.assets}
-
+                        scrollEnabled={false}  
                         contentContainerStyle={{
                             flexGrow: 1,
                         }}
