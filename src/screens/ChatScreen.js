@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext , useRef ,memo} from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useContext, useRef, memo } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios'; // Ensure axios is installed for making HTTP requests
 
 const substring = '+91';
 
@@ -22,16 +23,18 @@ const ChatScreen = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [socket, setSocket] = useState(null);
-  const flatListRef = useRef()
+  const [loading, setLoading] = useState(false);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+  const flatListRef = useRef();
   const phoneNumber = removeAllSpaces(phone);
+  const [page, setPage] = useState(1); // Pagination state
 
   useEffect(() => {
-    console.log("WebSocket starting with URL");
     const ws = new WebSocket(`ws://192.168.1.12:9999/chat-service/api/ws?token=${token}`);
 
     ws.onopen = () => {
       console.log('WebSocket connection opened');
-      setSocket(ws); // Set the socket after connection is opened
+      setSocket(ws);
     };
 
     ws.onmessage = (e) => {
@@ -40,7 +43,6 @@ const ChatScreen = ({ route }) => {
       if (flatListRef.current) {
         flatListRef.current.scrollToEnd({ animated: true });
       }
-
     };
 
     ws.onerror = (error) => {
@@ -49,23 +51,59 @@ const ChatScreen = ({ route }) => {
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
-      setSocket(null); // Reset the socket when connection is closed
+      setSocket(null);
     };
 
     return () => {
       if (ws) {
-        ws.close(); // Close the WebSocket connection on cleanup
+        ws.close();
       }
     };
   }, [token]);
 
+  useEffect(() => {
+    // Fetch initial messages when the component mounts
+    fetchMessages();
+  }, [phone]);
+
+  const fetchMessages = async (pageNumber = 1) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://192.168.1.12:9999/chat-service/api/messages`, {
+        params: {
+          token: token,
+          phone: phoneNumber,
+          page: pageNumber,
+          limit: 20, // Number of messages per page
+        },
+      });
+      if (response.data.length > 0) {
+        setMessages((prevMessages) => [...response.data, ...prevMessages]);
+        setHasMoreMessages(response.data.length === 20);
+      } else {
+        setHasMoreMessages(false);
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (hasMoreMessages && !loading) {
+      setPage((prevPage) => prevPage + 1);
+      fetchMessages(page + 1);
+    }
+  };
+
   const sendMessage = () => {
     if (socket && input.trim()) {
       if (socket.readyState === WebSocket.OPEN) {
-        const message = { sender: phoneNumber, receiver : phoneNumber, type:"login", content: input, timestamp: new Date().toISOString() };
-        console.log(message)
+        const message = { sender: phoneNumber, receiver: phoneNumber, type: "login", content: input, timestamp: new Date().toISOString() };
+        console.log(message);
         socket.send(JSON.stringify(message));
-        setMessages((prevMessages) => [...prevMessages, message]); // Display the sent message
+        setMessages((prevMessages) => [...prevMessages, message]);
         setInput('');
         if (flatListRef.current) {
           flatListRef.current.scrollToEnd({ animated: true });
@@ -111,15 +149,16 @@ const ChatScreen = ({ route }) => {
         ref={flatListRef}
         data={messages}
         renderItem={renderItem}
-        keyExtractor={(item) => item.timestamp} // Use timestamp as key for uniqueness
+        keyExtractor={(item) => item.timestamp}
         style={styles.chatList}
         contentContainerStyle={{ paddingBottom: 20 }}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={50}
         windowSize={10}
-
-        //inverted // To display the latest message at the bottom
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
       />
       <View style={styles.inputContainer}>
         <TextInput
